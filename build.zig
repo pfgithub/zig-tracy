@@ -36,7 +36,7 @@ pub fn build(b: *std.Build) !void {
 
     const glfw_for_tracy_dep = b.dependency("glfw", .{ .target = target, .optimize = optimize });
     const tracy_exe = b.addExecutable(.{
-        .name = "tracy",
+        .name = "tracy_profiler",
         .target = target,
         .optimize = optimize,
     });
