@@ -16,7 +16,7 @@ Tracy packaged for the zig build system. Compiles client & profiler.
 # Usage:
 
 ```
-zig fetch --save=tracy https://github.com/pfgithub/zig-imgui/archive/LATEST_COMMIT_HASH.tar.gz
+zig fetch --save=tracy https://github.com/pfgithub/zig-tracy/archive/LATEST_COMMIT_HASH.tar.gz
 ```
 
 ```zig
