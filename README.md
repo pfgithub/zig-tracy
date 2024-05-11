@@ -36,7 +36,8 @@ if (enable_tracy) {
 Building tracy_profiler
 
 - (windows) TODO
-- (mac) TODO
+- (mac) System must have installed:
+  - `brew install capstone`
 - (linux) System must have installed:
   - `capstone-devel`
   - `libzstd-devel`

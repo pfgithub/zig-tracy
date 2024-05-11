@@ -41,11 +41,6 @@ pub fn build(b: *std.Build) !void {
         .optimize = optimize,
     });
     tracy_exe.linkLibrary(glfw_for_tracy_dep.artifact("glfw"));
-    tracy_exe.linkSystemLibrary("capstone"); // https://github.com/capstone-engine/capstone
-    tracy_exe.linkSystemLibrary("zstd");
-    if (target.result.os.tag == .linux) {
-        tracy_exe.linkSystemLibrary("dbus-1");
-    }
     tracy_exe.addCSourceFiles(.{
         .root = tracy_dep.path("."),
         .files = &[_][]const u8{
@@ -152,7 +147,6 @@ pub fn build(b: *std.Build) !void {
             "public/libbacktrace/sort.cpp",
             "public/libbacktrace/state.cpp",
             "public/TracyClient.cpp",
-            "nfd/nfd_portal.cpp",
 
             "imgui/imgui.cpp",
             "imgui/imgui_demo.cpp",
@@ -165,6 +159,42 @@ pub fn build(b: *std.Build) !void {
             "-fexperimental-library",
         },
     });
+    switch(target.result.os.tag) {
+        .macos => {
+            tracy_exe.linkSystemLibrary("capstone");
+            tracy_exe.linkSystemLibrary("libzstd");
+            tracy_exe.addCSourceFiles(.{
+                .root = tracy_dep.path("."),
+                .files = &[_][]const u8{
+                    "nfd/nfd_cocoa.m",
+                },
+                .flags = &[_][]const u8{
+                    "-fno-sanitize=undefined",
+                    "-fexperimental-library",
+                },
+            });
+            tracy_exe.linkFramework("AppKit");
+            tracy_exe.linkFramework("UniformTypeIdentifiers");
+        },
+        .linux => {
+            tracy_exe.linkSystemLibrary("capstone");
+            tracy_exe.linkSystemLibrary("zstd");
+            tracy_exe.linkSystemLibrary("dbus-1");
+            tracy_exe.addCSourceFiles(.{
+                .root = tracy_dep.path("."),
+                .files = &[_][]const u8{
+                    "profiler/src/BackendGlfw.cpp",
+                    "profiler/src/imgui/imgui_impl_glfw.cpp",
+                    "nfd/nfd_portal.cpp",
+                },
+                .flags = &[_][]const u8{
+                    "-fno-sanitize=undefined",
+                    "-fexperimental-library",
+                },
+            });
+        },
+        else => @panic("TODO support OS"),
+    }
     tracy_exe.addIncludePath(tracy_dep.path("."));
     tracy_exe.addIncludePath(tracy_dep.path("imgui"));
     tracy_exe.addIncludePath(tracy_dep.path("profiler"));
