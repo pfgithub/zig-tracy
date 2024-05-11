@@ -20,14 +20,17 @@ zig fetch --save=tracy https://github.com/pfgithub/zig-tracy/archive/LATEST_COMM
 ```
 
 ```zig
-// make sure to conditionally do this otherwise you'll break cross compilation!
-// also you don't always want tracy compiled in your app probably
-const tracy_dep = b.dependency("tracy");
-// link tracy to your app
-exe.addLibrary(tracy_dep.artifact("tracy_client"));
+if (enable_tracy) {
+    const tracy_dep = b.dependency("tracy", .{
+        .target = target,
+        .optimize = optimize,
+    });
 
-// (optional) install tracy_profiler next to your app
-b.installArtifact(tracy_dep.artifact("tracy_profiler"));
+    app.compile.linkLibrary(tracy_dep.artifact("tracy_client"));
+
+    // optional
+    b.installArtifact(tracy_dep.artifact("tracy_profiler"));
+}
 ```
 
 Building tracy_profiler
