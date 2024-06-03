@@ -1,4 +1,4 @@
-For mach-nominated zig version [2024.3.0-mach](https://machengine.org/about/nominated-zig/#202430-mach)
+For mach-nominated zig version [2024.5.0-mach](https://machengine.org/about/nominated-zig/#202450-mach)
 
 Tracy packaged for the zig build system. Compiles client & profiler.
 
